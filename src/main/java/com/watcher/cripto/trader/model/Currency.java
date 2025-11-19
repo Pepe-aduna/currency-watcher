@@ -1,4 +1,4 @@
-package com.aduna.cripto.trader.trader.model;
+package com.watcher.cripto.trader.model;
 
 import java.util.Date;
 

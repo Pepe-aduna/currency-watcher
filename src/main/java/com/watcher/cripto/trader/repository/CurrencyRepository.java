@@ -1,8 +1,9 @@
-package com.aduna.cripto.trader.trader.repository;
+package com.watcher.cripto.trader.repository;
 
-import com.aduna.cripto.trader.trader.model.Currency;
-import org.springframework.data.repository.CrudRepository;
+import com.watcher.cripto.trader.model.Currency;
+//import org.springframework.data.repository.CrudRepository;
 
 
-public interface CurrencyRepository extends CrudRepository<Currency, Integer> {
+public interface CurrencyRepository {
+        /*extends CrudRepository<Currency, Integer> {*/
 }

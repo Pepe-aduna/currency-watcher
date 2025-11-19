@@ -1,4 +1,4 @@
-package com.aduna.cripto.trader.trader.endpoint;
+package com.watcher.cripto.trader.endpoint;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.HttpStatusCode;
@@ -14,6 +14,6 @@ public class Endpoint {
     @PostMapping(path = "/hello",  produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<String> hello(@RequestBody String name) {
 
-        return new ResponseEntity<String>("", HttpStatus.OK);;
+        return new ResponseEntity<String>("", HttpStatus.OK);
     }
 }
