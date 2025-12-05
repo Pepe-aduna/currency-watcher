@@ -48,9 +48,9 @@ public class SyncRestClient {
         return "";
     }
 
-    public String sendGet(){
+    public String sendGet(String url){
         try (final CloseableHttpClient httpclient = HttpClients.createDefault()) {
-            final HttpGet httpget = new HttpGet("http://httpbin.org/get");
+            final HttpGet httpget = new HttpGet(url);
 
             System.out.println("Executing request " + httpget.getMethod() + " " + httpget.getUri());
 
