@@ -4,6 +4,7 @@ import com.watcher.cripto.trader.model.TrackData;
 import com.watcher.cripto.trader.repository.CurrencyRepository;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Repository;
 import org.springframework.stereotype.Service;
 
@@ -23,11 +24,18 @@ public class Watcher {
             TrackData data = new TrackData(symbol);
             //Optional<TrackData> oData = currencyRepository.findLastByName(data);
             data = binanceService.getAveragePrice(data);
-
             currencyRepository.save(data);
             //System.out.println("Found: " + oData.isPresent());
-
         }
+    }
+
+    public TrackData getLastData(String symbol){
+        return currencyRepository.findLastBySymbol(symbol);
+    }
+
+    @Scheduled(fixedRate = 60000,fixedDelay = 20000)
+    public void preScheduler(){
+        trackCurrencies();
     }
 
 }

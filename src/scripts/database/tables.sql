@@ -1,8 +1,8 @@
 CREATE TABLE `currency_data`.`price_track` (
-  `price` DECIMAL(10) NOT NULL,
+  `price` DOUBLE NOT NULL,
   `time` BIGINT(10) NOT NULL,
   `date` DATETIME NOT NULL,
-  `symbol` VARCHAR(8) NOT NULL,
+  `symbol` VARCHAR(20) NOT NULL,
   `type` VARCHAR(10) NULL,
   `kind` VARCHAR(45) NULL,
   `variation` VARCHAR(10) NULL,

@@ -58,6 +58,23 @@ public class MessengerService implements SpringLongPollingBot, LongPollingSingle
         }
     }
 
+    public void sendMessage(Long chat_id,String text){
+
+        System.out.printf("%d - %s%n",chat_id, text);
+
+        SendMessage message = SendMessage // Create a message object
+                .builder()
+                .chatId(chat_id)
+                .text(text)
+                .build();
+
+        try {
+            telegramClient.execute(message); // Sending our message object to user
+        } catch (TelegramApiException e) {
+            e.printStackTrace();
+        }
+    }
+
     @AfterBotRegistration
     public void afterRegistration(BotSession botSession) {
         System.out.println("Registered bot running state is: " + botSession.isRunning());

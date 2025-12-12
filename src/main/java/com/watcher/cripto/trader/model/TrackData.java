@@ -28,7 +28,7 @@ public class TrackData {
     public TrackData(JSONObject t){
         price = Double.valueOf(t.getString("price"));
         time = t.getLong("closeTime");
-
+        date = new Date();
     }
 
     public TrackData(String symbol){

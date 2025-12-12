@@ -55,16 +55,16 @@ public class SyncRestClient {
             System.out.println("Executing request " + httpget.getMethod() + " " + httpget.getUri());
 
             final String result = httpclient.execute(httpget, response -> {
-                System.out.println("----------------------------------------");
-                System.out.println(httpget + "->" + new StatusLine(response));
                 // Process response message and convert it into a value object
-                return EntityUtils.toString(response.getEntity());
+                String r = EntityUtils.toString(response.getEntity());
+                System.out.println("RAW RESPONSE ->" + new StatusLine(response) +" : " +
+                        r);
+                return r;
             });
-            System.out.println(result);
+            return result;
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
-        return "";
     }
 
 }
