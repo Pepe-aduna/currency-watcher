@@ -1,40 +1,61 @@
 package com.watcher.cripto.trader.service;
 
-import com.watcher.cripto.trader.model.ConfigurationData;
 import com.watcher.cripto.trader.model.TrackData;
 import com.watcher.cripto.trader.repository.CurrencyRepository;
-import jakarta.annotation.PostConstruct;
+import org.json.JSONArray;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.actuate.endpoint.annotation.Endpoint;
+import org.springframework.boot.actuate.endpoint.annotation.ReadOperation;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
-import static com.watcher.cripto.trader.model.C_CONSTANTS.*;
+import java.text.SimpleDateFormat;
 
+import static com.watcher.cripto.trader.model.C_CONSTANTS.*;
+import static java.lang.String.format;
+
+@Endpoint(id = "assistant")
 @Service
 public class CurrencyAssistant {
 
     @Autowired
     Watcher watcher;
     @Autowired
-    CurrencyRepository repository;
-    @Autowired
     MessengerService messengerService;
+    @Autowired
+    CurrencyRepository currencyRepository;
 
-    JSONObject config = new JSONObject();
+    @Autowired
+    JSONObject config;
 
-    @PostConstruct
-    public void setUp(){
-        ConfigurationData configData = repository.getConfiguration(WATCHES);
-        JSONObject pre = new JSONObject(configData.getValue());
-        config.put(SYMBOL,pre.getString(SYMBOL));
-        config.put(NOTIFICATION_ID,pre.getLong(NOTIFICATION_ID));
-    }
+    String sCurrent = "Symbol: %s \nPrice: %.8f\n";
+    String sRanges = "%s_%d: %.8f %s_%d: %s\n";
 
-    @Scheduled(cron = "0,30 * * * *")
-    public void preScheduler(){
-        TrackData data = watcher.getLastData(config.getString(SYMBOL));
-        String message = String.format("Symbol: %s \n Price: %.8f \n Id: %d",data.getSymbol(),data.getPrice(),data.getT_id());
+    @ReadOperation
+    @Scheduled(cron = "0 0/30 * * * ?")
+    public String preScheduler(){
+        SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        StringBuilder builder = new StringBuilder();
+        String symbol = config.getString(SYMBOL);
+        JSONArray ranges = config.getJSONArray(RANGES);
+
+        TrackData data = watcher.getLastData(symbol);
+        builder.append(format(sCurrent,symbol,data.getPrice()));
+
+        ranges.forEach(e -> {
+            Integer range = (Integer) e;
+            JSONObject json = currencyRepository.getCurrencyBorders(symbol,range);
+            builder.append(format(sRanges, MAX_PRICE,range,json.getDouble(MAX_PRICE),
+                    MAX_PRICE_DATE,range,format.format(json.get(MAX_PRICE_DATE))));
+
+            builder.append(format(sRanges, MIN_PRICE,range,json.getDouble(MIN_PRICE),
+                    MIN_PRICE_DATE,range,format.format(json.get(MIN_PRICE_DATE))));
+        });
+
+        String message = builder.toString();
         messengerService.sendMessage(config.getLong(NOTIFICATION_ID),message);
+        return message;
     }
+
 }

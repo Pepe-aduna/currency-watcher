@@ -1,16 +1,36 @@
 package com.watcher.cripto.trader.repository;
 
-import com.watcher.cripto.trader.model.ConfigurationData;
-import com.watcher.cripto.trader.model.Currency;
-import com.watcher.cripto.trader.model.TrackData;
-import org.springframework.data.jpa.repository.Query;
-import org.springframework.data.repository.CrudRepository;
+import org.json.JSONObject;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.jdbc.core.JdbcOperations;
+import org.springframework.stereotype.Repository;
 
-public interface CurrencyRepository extends CrudRepository<TrackData, Integer> {
+import java.text.SimpleDateFormat;
 
-    @Query("SELECT t FROM TrackData t WHERE t.symbol = :symbol order by t_id DESC LIMIT 1")
-    TrackData findLastBySymbol(String symbol);
+import static com.watcher.cripto.trader.model.C_CONSTANTS.*;
 
-    @Query("SELECT c FROM ConfigurationData c WHERE c.name = :name")
-    ConfigurationData getConfiguration(String name);
+@Repository
+public class CurrencyRepository {
+
+    @Autowired
+    JdbcOperations jdbcOperations;
+
+    String borderQ = "SELECT * FROM price_track where  symbol = '%s' AND " +
+            "date BETWEEN DATE_SUB(NOW(), INTERVAL %d HOUR) AND NOW() ORDER BY price %s LIMIT 1;";
+
+    public JSONObject getCurrencyBorders(String symbol,Integer hours){
+        JSONObject borders = new JSONObject();
+        String q = String.format(borderQ, symbol,hours,"DESC");
+        jdbcOperations.query(q, (rs, row)->{ borders.put(MAX_PRICE,rs.getDouble(PRICE));
+            borders.put(MAX_PRICE_DATE,rs.getTimestamp(DATE));
+            return null;});
+
+        q = String.format(borderQ, symbol,hours,"ASC");
+        jdbcOperations.query(q, (rs, row)->{ borders.put(MIN_PRICE,rs.getDouble(PRICE));
+            borders.put(MIN_PRICE_DATE,rs.getTimestamp(DATE));
+            return null;});
+
+        return borders;
+    }
+
 }

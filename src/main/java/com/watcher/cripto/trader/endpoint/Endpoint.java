@@ -5,14 +5,11 @@ import com.watcher.cripto.trader.service.Watcher;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.HttpStatusCode;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
-
-import java.util.Arrays;
 
 @RestController
 public class Endpoint {
@@ -34,8 +31,10 @@ public class Endpoint {
         String symbol = json.getString("symbol");
 
         watcher.trackCurrencies(symbol);
-        assistant.preScheduler();
-
-        return new ResponseEntity<String>("{}", HttpStatus.OK);
+        String message = assistant.preScheduler();
+        JSONObject response = new JSONObject();
+        response.put("message",message);
+        return new ResponseEntity<String>(response.toString(), HttpStatus.OK);
     }
+
 }

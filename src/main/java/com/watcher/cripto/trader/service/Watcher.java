@@ -1,23 +1,22 @@
 package com.watcher.cripto.trader.service;
 
+import com.watcher.cripto.trader.model.C_CONSTANTS;
 import com.watcher.cripto.trader.model.TrackData;
-import com.watcher.cripto.trader.repository.CurrencyRepository;
+import com.watcher.cripto.trader.repository.BasicRepository;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
-import org.springframework.stereotype.Repository;
 import org.springframework.stereotype.Service;
-
-import java.util.Optional;
 
 @Service
 public class Watcher {
 
     @Autowired
     BinanceService binanceService;
-
     @Autowired
-    CurrencyRepository currencyRepository;
+    BasicRepository currencyRepository;
+    @Autowired
+    JSONObject config;
 
     public void trackCurrencies(String... symbols){
         for (String symbol : symbols) {
@@ -25,7 +24,7 @@ public class Watcher {
             //Optional<TrackData> oData = currencyRepository.findLastByName(data);
             data = binanceService.getAveragePrice(data);
             currencyRepository.save(data);
-            //System.out.println("Found: " + oData.isPresent());
+            System.out.println(String.format("%s - %.8f - %s",data.getSymbol(),data.getPrice(),data.getDate().toString()));
         }
     }
 
@@ -33,9 +32,9 @@ public class Watcher {
         return currencyRepository.findLastBySymbol(symbol);
     }
 
-    @Scheduled(fixedRate = 60000,fixedDelay = 20000)
+    @Scheduled(fixedRate = 60000)
     public void preScheduler(){
-        trackCurrencies();
+        trackCurrencies(config.getString(C_CONSTANTS.SYMBOL));
     }
 
 }
