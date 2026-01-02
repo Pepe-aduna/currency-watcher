@@ -1,5 +1,5 @@
 CREATE TABLE `currency_data`.`price_track` (
-  `price` DOUBLE NOT NULL,
+  `price` DECIMAL(18,8) NOT NULL,
   `time` BIGINT(10) NOT NULL,
   `date` DATETIME NOT NULL,
   `symbol` VARCHAR(20) NOT NULL,
@@ -7,11 +7,16 @@ CREATE TABLE `currency_data`.`price_track` (
   `kind` VARCHAR(45) NULL,
   `variation` VARCHAR(10) NULL,
   `direction` VARCHAR(10) NULL,
-  `price_trackcol` VARCHAR(45) NULL,
+  `price_track` VARCHAR(45) NULL,
   `millis_diff` BIGINT(10) NULL,
-  `t_id` BIGINT(10) NOT NULL AUTO_INCREMENT,
+  `id` BIGINT(10) NOT NULL AUTO_INCREMENT,
   PRIMARY KEY (`t_id`),
-  UNIQUE INDEX `id_UNIQUE` (`t_id` ASC) VISIBLE);
+  UNIQUE INDEX `id_UNIQUE` (`t_id` ASC) VISIBLE,
+
+  INDEX idx_symbol (symbol),
+  INDEX idx_recorded_at (recorded_at),
+  INDEX idx_symbol_time (symbol, recorded_at)
+ );
 
 CREATE TABLE `currency_data`.`configurations` (
 `name` VARCHAR(20) NOT NULL,

@@ -32,7 +32,7 @@ public class Watcher {
         return currencyRepository.findLastBySymbol(symbol);
     }
 
-    @Scheduled(fixedRate = 60000)
+    @Scheduled(cron = "0 * * * * ?")
     public void preScheduler(){
         trackCurrencies(config.getString(C_CONSTANTS.SYMBOL));
     }

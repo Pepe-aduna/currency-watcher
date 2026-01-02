@@ -15,6 +15,7 @@ public class C_CONSTANTS {
     public static String MIN_PRICE_DATE = "min_price_date";
 
     //Table names
+    public static String _ID = "id";
     public static String PRICE = "price";
     public static String DATE = "date";
 }

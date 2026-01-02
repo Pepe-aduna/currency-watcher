@@ -7,7 +7,7 @@ import org.springframework.data.repository.CrudRepository;
 
 public interface BasicRepository extends CrudRepository<TrackData, Integer> {
 
-    @Query("SELECT t FROM TrackData t WHERE t.symbol = :symbol order by t_id DESC LIMIT 1")
+    @Query("SELECT t FROM TrackData t WHERE t.symbol = :symbol order by id DESC LIMIT 1")
     TrackData findLastBySymbol(String symbol);
 
     @Query("SELECT c FROM ConfigurationData c WHERE c.name = :name")

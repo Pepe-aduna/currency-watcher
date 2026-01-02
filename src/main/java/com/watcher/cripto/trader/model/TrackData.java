@@ -20,7 +20,7 @@ public class TrackData {
     private Long millis_diff;
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long t_id;
+    private Long id;
 
     public TrackData(){
     }
@@ -71,8 +71,8 @@ public class TrackData {
         return millis_diff;
     }
 
-    public Long getT_id() {
-        return t_id;
+    public Long getId() {
+        return id;
     }
 
     public void setPrice(Double price) {
@@ -111,7 +111,7 @@ public class TrackData {
         this.millis_diff = millis_diff;
     }
 
-    public void setT_id(Long t_id) {
-        this.t_id = t_id;
+    public void setId(Long t_id) {
+        this.id = t_id;
     }
 }

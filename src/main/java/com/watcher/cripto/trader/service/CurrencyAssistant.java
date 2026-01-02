@@ -33,7 +33,7 @@ public class CurrencyAssistant {
     String sRanges = "%s_%d: %.8f %s_%d: %s\n";
 
     @ReadOperation
-    @Scheduled(cron = "0 0/30 * * * ?")
+    @Scheduled(cron = "0 0/20 * * * ?")
     public String preScheduler(){
         SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         StringBuilder builder = new StringBuilder();
@@ -46,7 +46,7 @@ public class CurrencyAssistant {
         ranges.forEach(e -> {
             Integer range = (Integer) e;
             JSONObject json = currencyRepository.getCurrencyBorders(symbol,range);
-            builder.append(format(sRanges, MAX_PRICE,range,json.getDouble(MAX_PRICE),
+            builder.append(format(sRanges, "**max**_price",range,json.getDouble(MAX_PRICE),
                     MAX_PRICE_DATE,range,format.format(json.get(MAX_PRICE_DATE))));
 
             builder.append(format(sRanges, MIN_PRICE,range,json.getDouble(MIN_PRICE),
