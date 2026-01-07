@@ -1,5 +1,7 @@
 package com.watcher.cripto.trader.service;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.client.okhttp.OkHttpTelegramClient;
@@ -15,6 +17,7 @@ import org.telegram.telegrambots.meta.generics.TelegramClient;
 
 @Component
 public class MessengerService implements SpringLongPollingBot, LongPollingSingleThreadUpdateConsumer {
+    private static final Logger log = LoggerFactory.getLogger(MessengerService.class);
 
     private final TelegramClient telegramClient;
     String token;
@@ -43,17 +46,18 @@ public class MessengerService implements SpringLongPollingBot, LongPollingSingle
             String message_text = update.getMessage().getText();
             long chat_id = update.getMessage().getChatId();
 
-            System.out.println(String.format("%s - %s",chat_id, message_text));
+            log.info("{} - {}",chat_id, message_text);
 
             SendMessage message = SendMessage // Create a message object
                     .builder()
                     .chatId(chat_id)
                     .text(message_text)
+                    .parseMode("HTML")
                     .build();
             try {
                 telegramClient.execute(message); // Sending our message object to user
             } catch (TelegramApiException e) {
-                e.printStackTrace();
+                log.error("Sending message: ",e);
             }
         }
     }
@@ -66,12 +70,13 @@ public class MessengerService implements SpringLongPollingBot, LongPollingSingle
                 .builder()
                 .chatId(chat_id)
                 .text(text)
+                .parseMode("HTML")
                 .build();
 
         try {
             telegramClient.execute(message); // Sending our message object to user
         } catch (TelegramApiException e) {
-            e.printStackTrace();
+            log.error("Sending message: ",e);
         }
     }
 

@@ -19,9 +19,12 @@ public class CurrencyRepository {
     String borderQ = "SELECT * FROM price_track where  symbol = '%s' AND " +
             "date BETWEEN DATE_SUB(NOW(), INTERVAL %d HOUR) AND NOW() ORDER BY price %s LIMIT 1;";
 
-    String peaksQ = "SELECT id, symbol, price, date, FROM crypto_prices " +
+    String peaksQ = "SELECT id, symbol, price, date, FROM price_track " +
             "WHERE symbol = '%s' and date BETWEEN DATE_SUB(NOW(), INTERVAL %d HOUR) AND NOW() " +
             "ORDER BY date ASC;";
+
+    String allByDate = "SELECT price, date, id FROM price_track " +
+            "WHERE symbol = '%s' ORDER BY date %s;";
 
     public JSONObject getCurrencyBorders(String symbol,Integer hours){
         JSONObject borders = new JSONObject();
@@ -41,10 +44,10 @@ public class CurrencyRepository {
     public List<JSONObject> getCurrencyPeaks(String symbol,Integer hours){
         List<JSONObject> rows = new ArrayList<>();
 
-        String q = String.format(peaksQ, symbol,hours);
-        jdbcOperations.query(q, (rs, row)->{ rows.add(new JSONObject().put(PRICE,rs.getDouble(PRICE)));
-            rows.add(new JSONObject().put(DATE,rs.getTimestamp(DATE)));
-            rows.add(new JSONObject().put(_ID,rs.getTimestamp("id"))
+        String q = String.format(allByDate, symbol,"ASC");
+        jdbcOperations.query(q, (rs, row)->{ rows.add(new JSONObject().put(PRICE,rs.getDouble(PRICE))
+                .put(DATE,rs.getTimestamp(DATE))
+                .put(_ID,rs.getTimestamp("id"))
             );
             return null;});
 

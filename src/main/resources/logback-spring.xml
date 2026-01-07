@@ -1,0 +1,38 @@
+<configuration>
+
+    <!-- Spring properties -->
+    <springProperty scope="context" name="APP_NAME"
+                    source="spring.application.name"/>
+
+    <springProperty scope="context" name="LOG_PATH"
+                    source="logging.file.path"
+                    defaultValue="logs"/>
+
+    <springProperty scope="context" name="LOG_LEVEL"
+                    source="logging.level.root"
+                    defaultValue="INFO"/>
+
+    <springProperty scope="context" name="CONSOLE_PATTERN"
+                    source="logging.pattern.console"/>
+
+    <!-- Console -->
+    <appender name="CONSOLE"
+              class="ch.qos.logback.core.ConsoleAppender">
+        <encoder>
+            <pattern>${CONSOLE_PATTERN}</pattern>
+        </encoder>
+    </appender>
+
+    <!-- Root -->
+    <root level="${LOG_LEVEL}">
+        <appender-ref ref="CONSOLE"/>
+    </root>
+
+    <!-- Package-specific logging -->
+    <logger name="com.watcher.cripto.trader"
+            level="DEBUG"
+            additivity="false">
+        <appender-ref ref="CONSOLE"/>
+    </logger>
+
+</configuration>

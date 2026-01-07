@@ -30,12 +30,12 @@ public class CurrencyAssistant {
     JSONObject config;
 
     String sCurrent = "Symbol: %s \nPrice: %.8f\n";
-    String sRanges = "%s_%d: %.8f %s_%d: %s\n";
+    String sRanges = "<b>%s %d:</b> %.8f : %s\n";
 
     @ReadOperation
-    @Scheduled(cron = "0 0/20 * * * ?")
+    @Scheduled(cron = "0 0/15 * * * ?")
     public String preScheduler(){
-        SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        SimpleDateFormat format = new SimpleDateFormat("yy-MM-dd HH:mm:ss");
         StringBuilder builder = new StringBuilder();
         String symbol = config.getString(SYMBOL);
         JSONArray ranges = config.getJSONArray(RANGES);
@@ -46,11 +46,11 @@ public class CurrencyAssistant {
         ranges.forEach(e -> {
             Integer range = (Integer) e;
             JSONObject json = currencyRepository.getCurrencyBorders(symbol,range);
-            builder.append(format(sRanges, "**max**_price",range,json.getDouble(MAX_PRICE),
-                    MAX_PRICE_DATE,range,format.format(json.get(MAX_PRICE_DATE))));
+            builder.append(format(sRanges, "max price",range,json.getDouble(MAX_PRICE),
+                    format.format(json.get(MAX_PRICE_DATE))));
 
             builder.append(format(sRanges, MIN_PRICE,range,json.getDouble(MIN_PRICE),
-                    MIN_PRICE_DATE,range,format.format(json.get(MIN_PRICE_DATE))));
+                    format.format(json.get(MIN_PRICE_DATE))));
         });
 
         String message = builder.toString();

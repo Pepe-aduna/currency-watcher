@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import org.json.JSONObject;
 
 
+import java.util.Calendar;
 import java.util.Date;
 
 @Table(name = "price_track")
@@ -28,6 +29,13 @@ public class TrackData {
     public TrackData(JSONObject t){
         price = Double.valueOf(t.getString("price"));
         time = t.getLong("closeTime");
+        date = new Date();
+    }
+
+    public TrackData(String symbol, Double price){
+        this.symbol = symbol;
+        this.price = price;
+        time = Calendar.getInstance().getTimeInMillis();
         date = new Date();
     }
 

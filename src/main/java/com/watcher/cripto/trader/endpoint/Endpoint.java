@@ -1,6 +1,7 @@
 package com.watcher.cripto.trader.endpoint;
 
 import com.watcher.cripto.trader.service.CurrencyAssistant;
+import com.watcher.cripto.trader.service.MessengerService;
 import com.watcher.cripto.trader.service.Watcher;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,6 +19,8 @@ public class Endpoint {
     Watcher watcher;
     @Autowired
     CurrencyAssistant assistant;
+    @Autowired
+    MessengerService messenger;
 
     @PostMapping(path = "/hello",  produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<String> hello(@RequestBody String name) {
@@ -35,6 +38,18 @@ public class Endpoint {
         JSONObject response = new JSONObject();
         response.put("message",message);
         return new ResponseEntity<String>(response.toString(), HttpStatus.OK);
+    }
+
+
+    @PostMapping(path = "/telegram",  produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<String> telegram(@RequestBody String body) {
+        JSONObject json = new JSONObject(body);
+        String format = json.getString("format");
+        String m = json.getString("text");
+
+        String message = String.format(format,m);
+        messenger.sendMessage(6967306727L,message);
+        return new ResponseEntity<String>(message, HttpStatus.OK);
     }
 
 }
