@@ -1,7 +1,6 @@
 package com.watcher.cripto.trader.endpoint;
 
 import com.watcher.cripto.trader.service.PriceStatistics;
-import com.watcher.cripto.trader.service.SyncRestClient;
 import com.watcher.cripto.trader.service.alerts.PriceAlerts;
 import org.json.JSONObject;
 import org.slf4j.Logger;
@@ -13,8 +12,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
-
-import java.math.BigDecimal;
 
 @RestController("test")
 public class Tester {

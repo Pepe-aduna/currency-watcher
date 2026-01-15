@@ -1,12 +1,11 @@
 package com.watcher.cripto.trader.service.alerts;
 
-import com.watcher.cripto.trader.service.SyncRestClient;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
 import java.math.BigDecimal;
-import java.util.*;
+import java.util.TreeSet;
 
 @Component
 public class PriceAlerts {
