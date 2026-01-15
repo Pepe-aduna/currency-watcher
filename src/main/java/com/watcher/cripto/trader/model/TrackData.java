@@ -4,13 +4,14 @@ import jakarta.persistence.*;
 import org.json.JSONObject;
 
 
+import java.math.BigDecimal;
 import java.util.Calendar;
 import java.util.Date;
 
 @Table(name = "price_track")
 @Entity
 public class TrackData {
-    private Double price;
+    private BigDecimal price;
     private Long time;
     private Date date;
     private String symbol;
@@ -27,12 +28,13 @@ public class TrackData {
     }
 
     public TrackData(JSONObject t){
-        price = Double.valueOf(t.getString("price"));
+        double p = Double.parseDouble(t.getString("price"));
+        price = BigDecimal.valueOf(p);
         time = t.getLong("closeTime");
         date = new Date();
     }
 
-    public TrackData(String symbol, Double price){
+    public TrackData(String symbol, BigDecimal price){
         this.symbol = symbol;
         this.price = price;
         time = Calendar.getInstance().getTimeInMillis();
@@ -43,7 +45,7 @@ public class TrackData {
         this.symbol = symbol;
     }
 
-    public Double getPrice() {
+    public BigDecimal getPrice() {
         return price;
     }
 
@@ -83,7 +85,7 @@ public class TrackData {
         return id;
     }
 
-    public void setPrice(Double price) {
+    public void setPrice(BigDecimal price) {
         this.price = price;
     }
 

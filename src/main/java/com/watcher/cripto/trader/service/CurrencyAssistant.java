@@ -2,8 +2,11 @@ package com.watcher.cripto.trader.service;
 
 import com.watcher.cripto.trader.model.TrackData;
 import com.watcher.cripto.trader.repository.CurrencyRepository;
+import com.watcher.cripto.trader.service.telegram.MessengerService;
 import org.json.JSONArray;
 import org.json.JSONObject;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.actuate.endpoint.annotation.Endpoint;
 import org.springframework.boot.actuate.endpoint.annotation.ReadOperation;
@@ -18,6 +21,7 @@ import static java.lang.String.format;
 @Endpoint(id = "assistant")
 @Service
 public class CurrencyAssistant {
+    private static final Logger log = LoggerFactory.getLogger(CurrencyAssistant.class);
 
     @Autowired
     Watcher watcher;
@@ -29,11 +33,11 @@ public class CurrencyAssistant {
     @Autowired
     JSONObject config;
 
-    String sCurrent = "Symbol: %s \nPrice: %.8f\n";
+    String sCurrent = "%s: %.8f\n";
     String sRanges = "<b>%s %d:</b> %.8f : %s\n";
 
     @ReadOperation
-    @Scheduled(cron = "0 0/15 * * * ?")
+    @Scheduled(cron = "0 0/10 * * * ?")
     public String preScheduler(){
         SimpleDateFormat format = new SimpleDateFormat("yy-MM-dd HH:mm:ss");
         StringBuilder builder = new StringBuilder();

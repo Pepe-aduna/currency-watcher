@@ -38,3 +38,19 @@ CREATE TABLE `currency_data`.`watch_list` (
   `udate` DATETIME NOT NULL,
   PRIMARY KEY (`idwatch_list`),
   UNIQUE INDEX `idwatch_list_UNIQUE` (`idwatch_list` ASC) VISIBLE);
+
+CREATE TABLE `currency_data`.`alerts` (
+`id` INT NOT NULL,
+`name` VARCHAR(45) NOT NULL,
+`symbol` VARCHAR(45) NOT NULL,
+`type` VARCHAR(45) NOT NULL,
+`message` VARCHAR(150) NOT NULL,
+`origin` VARCHAR(45) NOT NULL,
+`notification_channel` VARCHAR(45) NOT NULL,
+`percent` DOUBLE NULL,
+`open_price` DECIMAL(18,8) NULL,
+`amount_mov` DECIMAL(18,8) NOT NULL,
+`prices` VARCHAR(100) NULL,
+`reminders` INT NOT NULL,
+PRIMARY KEY (`id`),
+UNIQUE INDEX `id_UNIQUE` (`id` ASC) VISIBLE);

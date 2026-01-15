@@ -1,7 +1,8 @@
-package com.watcher.cripto.trader.service;
+package com.watcher.cripto.trader.service.telegram;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.client.okhttp.OkHttpTelegramClient;
@@ -12,6 +13,7 @@ import org.telegram.telegrambots.longpolling.starter.SpringLongPollingBot;
 import org.telegram.telegrambots.longpolling.util.LongPollingSingleThreadUpdateConsumer;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.Update;
+import org.telegram.telegrambots.meta.api.objects.message.Message;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 import org.telegram.telegrambots.meta.generics.TelegramClient;
 
@@ -21,6 +23,9 @@ public class MessengerService implements SpringLongPollingBot, LongPollingSingle
 
     private final TelegramClient telegramClient;
     String token;
+
+    @Autowired
+    CommandDispatcher dispatcher;
 
     public MessengerService(@Value("${telegram.token}")
                             String token) {
@@ -40,44 +45,36 @@ public class MessengerService implements SpringLongPollingBot, LongPollingSingle
 
     @Override
     public void consume(Update update) {
-        // We check if the update has a message and the message has text
-        if (update.hasMessage() && update.getMessage().hasText()) {
-            // Set variables
-            String message_text = update.getMessage().getText();
-            long chat_id = update.getMessage().getChatId();
+        String response = dispatcher.dispatch(update);
+        long chatId = update.getMessage().getChatId();
 
+        sendMessage(chatId,response);
+    }
+
+    public void consumeV1(Update update) {
+/*        if (update.hasChannelPost()) {
+            Message msg = update.getChannelPost();
+            Long chatId = msg.getChatId();
+
+            log.info("CHANNEL CHAT ID: {}", chatId);
+        }*/
+    }
+
+    public void sendMessage(Long chat_id,String message_text){
             log.info("{} - {}",chat_id, message_text);
 
-            SendMessage message = SendMessage // Create a message object
+            SendMessage message = SendMessage
                     .builder()
                     .chatId(chat_id)
                     .text(message_text)
                     .parseMode("HTML")
                     .build();
             try {
-                telegramClient.execute(message); // Sending our message object to user
+                telegramClient.execute(message);
             } catch (TelegramApiException e) {
                 log.error("Sending message: ",e);
             }
-        }
-    }
 
-    public void sendMessage(Long chat_id,String text){
-
-        System.out.printf("%d - %s%n",chat_id, text);
-
-        SendMessage message = SendMessage // Create a message object
-                .builder()
-                .chatId(chat_id)
-                .text(text)
-                .parseMode("HTML")
-                .build();
-
-        try {
-            telegramClient.execute(message); // Sending our message object to user
-        } catch (TelegramApiException e) {
-            log.error("Sending message: ",e);
-        }
     }
 
     @AfterBotRegistration

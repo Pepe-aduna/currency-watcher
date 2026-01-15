@@ -1,7 +1,7 @@
 package com.watcher.cripto.trader.endpoint;
 
 import com.watcher.cripto.trader.service.CurrencyAssistant;
-import com.watcher.cripto.trader.service.MessengerService;
+import com.watcher.cripto.trader.service.telegram.MessengerService;
 import com.watcher.cripto.trader.service.Watcher;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;

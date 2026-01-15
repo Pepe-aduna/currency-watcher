@@ -4,12 +4,15 @@ import com.watcher.cripto.trader.model.C_CONSTANTS;
 import com.watcher.cripto.trader.model.TrackData;
 import org.json.JSONArray;
 import org.json.JSONObject;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.actuate.endpoint.annotation.Endpoint;
 import org.springframework.boot.actuate.endpoint.annotation.ReadOperation;
 import org.springframework.stereotype.Service;
 
+import java.math.BigDecimal;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
@@ -20,6 +23,7 @@ import java.util.stream.Collectors;
 @Endpoint(id = "local-binance")
 @Service
 public class BinanceService {
+    private static final Logger log = LoggerFactory.getLogger(BinanceService.class);
 
     @Autowired
     private SyncRestClient syncRestClient;
@@ -71,7 +75,7 @@ public class BinanceService {
 
         array.forEach( e -> {
             JSONObject j = (JSONObject) e;
-            list.add(new TrackData(j.getString(C_CONSTANTS.SYMBOL), j.getDouble(C_CONSTANTS.PRICE)));
+            list.add(new TrackData(j.getString(C_CONSTANTS.SYMBOL), BigDecimal.valueOf(j.getDouble(C_CONSTANTS.PRICE))));
         });
 
         return list;

@@ -5,7 +5,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcOperations;
 import org.springframework.stereotype.Repository;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
 
 import static com.watcher.cripto.trader.model.C_CONSTANTS.*;
@@ -24,7 +26,7 @@ public class CurrencyRepository {
             "ORDER BY date ASC;";
 
     String allByDate = "SELECT price, date, id FROM price_track " +
-            "WHERE symbol = '%s' ORDER BY date %s;";
+            "WHERE symbol = '%s' AND date >= '%s' ORDER BY date %s;";
 
     public JSONObject getCurrencyBorders(String symbol,Integer hours){
         JSONObject borders = new JSONObject();
@@ -42,12 +44,17 @@ public class CurrencyRepository {
     }
 
     public List<JSONObject> getCurrencyPeaks(String symbol,Integer hours){
+        SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         List<JSONObject> rows = new ArrayList<>();
+        Calendar cal = Calendar.getInstance();
+        cal.add(Calendar.HOUR_OF_DAY,-hours);
+        cal.set(Calendar.MINUTE,0);
+        cal.set(Calendar.SECOND,0);
 
-        String q = String.format(allByDate, symbol,"ASC");
-        jdbcOperations.query(q, (rs, row)->{ rows.add(new JSONObject().put(PRICE,rs.getDouble(PRICE))
+        String q = String.format(allByDate, symbol,format.format(cal.getTime()),"ASC");
+        jdbcOperations.query(q, (rs, row)->{ rows.add(new JSONObject().put(PRICE,rs.getBigDecimal(PRICE))
                 .put(DATE,rs.getTimestamp(DATE))
-                .put(_ID,rs.getTimestamp("id"))
+                .put(_ID,rs.getLong("id"))
             );
             return null;});
 
