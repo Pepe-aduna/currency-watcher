@@ -2,7 +2,7 @@ package com.watcher.cripto.trader.endpoint;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.watcher.cripto.trader.model.Alert;
+import com.watcher.cripto.trader.model.AlertEntity;
 import com.watcher.cripto.trader.service.alerts.AlertService;
 import org.json.JSONObject;
 import org.slf4j.Logger;
@@ -27,7 +27,7 @@ public class AlertEndpoint {
     @PostMapping(path = "/alert/add",  produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<String> hello(@RequestBody String body) throws JsonProcessingException {
         JSONObject payload = new JSONObject(body);
-        Alert alert = objectMapper.readValue(body, Alert.class);
+        AlertEntity alert = objectMapper.readValue(body, AlertEntity.class);
         alertService.save(alert);
 
         log.info("{}",alert);

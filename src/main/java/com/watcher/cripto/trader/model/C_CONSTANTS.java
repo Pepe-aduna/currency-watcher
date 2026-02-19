@@ -14,6 +14,9 @@ public class C_CONSTANTS {
     public static String MAX_PRICE_DATE = "max_price_date";
     public static String MIN_PRICE_DATE = "min_price_date";
 
+    public static String FALLING = "falling";
+    public static String RISING = "rising";
+
     //Table names
     public static String _ID = "id";
     public static String PRICE = "price";

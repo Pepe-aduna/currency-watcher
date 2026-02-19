@@ -19,7 +19,7 @@ public class CurrencyRepository {
     JdbcOperations jdbcOperations;
 
     String borderQ = "SELECT * FROM price_track where  symbol = '%s' AND " +
-            "date BETWEEN DATE_SUB(NOW(), INTERVAL %d HOUR) AND NOW() ORDER BY price %s LIMIT 1;";
+            "date BETWEEN DATE_SUB(NOW(), INTERVAL %d MINUTE) AND NOW() ORDER BY price %s LIMIT 1;";
 
     String peaksQ = "SELECT id, symbol, price, date, FROM price_track " +
             "WHERE symbol = '%s' and date BETWEEN DATE_SUB(NOW(), INTERVAL %d HOUR) AND NOW() " +

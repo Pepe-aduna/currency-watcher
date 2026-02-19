@@ -28,8 +28,12 @@ public class Watcher {
 
     public void trackCurrencies(String... symbols){
         List<TrackData> tracks = binanceService.getCurrentPrice(symbols);
-        repository.saveAll(tracks);
+        //repository.saveAll(tracks);
         tracks.forEach( e -> {
+            TrackData last = getLastData(e.getSymbol());
+            e.setDirection(last.getPrice().compareTo(e.getPrice()) > 0 ?
+                    C_CONSTANTS.FALLING : C_CONSTANTS.RISING );
+            repository.save(e);
             alertService.evaluate(e.getSymbol(),e.getPrice());
         });
     }
@@ -38,7 +42,7 @@ public class Watcher {
         return repository.findLastBySymbol(symbol);
     }
 
-    @Scheduled(cron = "0 * * * * ?")
+    @Scheduled(cron = "*/30 * * * * ?")
     public void preScheduler(){
         trackCurrencies(config.getString(C_CONSTANTS.SYMBOL));
     }

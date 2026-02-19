@@ -46,7 +46,10 @@ public class PriceStatistics {
 
         log.info("MAX: {}",localMax);
         log.info("MIN: {}",localMin);
+    }
 
+    public void identifyMaxAndMin(String symbol){
+        //repository.getCurrencyBorders()
     }
 
     boolean isSignificant(BigDecimal a, BigDecimal b) {
